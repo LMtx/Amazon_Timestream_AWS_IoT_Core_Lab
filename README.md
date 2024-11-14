@@ -30,6 +30,21 @@ Remove cloud resources once you finish working with this lab to avoid AWS costs.
 cdk --profile default destroy --all
 ```
 
+## Explanation
+
+In the [first step](https://github.com/LMtx/Amazon_Timestream_AWS_IoT_Core_Lab/tree/001_timestream_db), we deployed the Amazon Timestream Database.
+
+Before AWS IoT Core can send telemetry data to that database, we need to grant it permission to do so. Please remember that AWS services can not interact with each other without explicit authorization.
+
+We will [create an IAM Role](https://github.com/LMtx/Amazon_Timestream_AWS_IoT_Core_Lab/tree/002_iam_role) allowing AWS IoT Core to execute actions defined in an IAM Policy.
+
+![](./img/002_iam_rule.png)
+
+Codifying IAM Roles and Policies provides several benefits:<br />
+✅ Tracking permission changes ("who" changed "what" on what "date").<br />
+✅ Auditing security posture (analyzing code to detect potential issues).<br />
+✅ Deploying the same set of privileges to Dev/Test/Int/Prod environments.
+
 ## Useful links
 
 ### AWS CLI

@@ -1,8 +1,10 @@
 from aws_cdk import (
     Stack,
     aws_timestream as timestream,
+    aws_iam as iam,
 )
 from constructs import Construct
+from typing import cast
 
 class TimestreamLabStack(Stack):
 
@@ -28,3 +30,23 @@ class TimestreamLabStack(Stack):
         
         timestream_table.node.add_dependency(timestream_db)
         
+        # Create an IAM Role for AWS IoT to write to Timestream
+        iot_timestream_role = iam.Role(
+            self, "IoTTimestreamRole",
+            role_name="IoTTimestreamRole",
+            assumed_by=cast(iam.IPrincipal, iam.ServicePrincipal("iot.amazonaws.com"))
+        )
+
+        # Policy for DescribeEndpoints
+        iot_timestream_role.add_to_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=["timestream:DescribeEndpoints"],
+            resources=["*"]
+        ))
+
+        # Policy for WriteRecords to the specific Timestream Table
+        iot_timestream_role.add_to_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=["timestream:WriteRecords"],
+            resources=[timestream_table.attr_arn]
+        ))
